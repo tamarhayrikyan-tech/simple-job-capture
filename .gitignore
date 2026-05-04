@@ -1,0 +1,41 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependencies (if you add any later)
+node_modules/
+
+# Build output (if you add any later)
+dist/
+build/
+*.crx
+*.pem
+*.zip
+
+# Local-only files
+*.log
+.env
+.env.local
+
+# Temp files
+.tmp/
+tmp/
+
+# Personal notes / drafts (exclude anything you don't want public)
+NOTES.md
+TODO.md
+scratch/
+
+# Project-related but not committed:
+# - Chrome Web Store listing draft (kept locally for store submission reference)
+# - Privacy audit (kept locally as a working document)
+Chrome-Web-Store-Listing.md
+simple-job-capture-privacy-audit.md

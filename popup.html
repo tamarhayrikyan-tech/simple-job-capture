@@ -1,0 +1,360 @@
+<!--
+  Simple Job Capture - Job Application Tracker
+  Copyright (c) 2026 Tamar Hayrikyan
+  Licensed under the MIT License. See LICENSE for details.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Job</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 450px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #faf8f3;
+            color: #1a1a1a;
+        }
+
+        .header {
+            background: #c84c09;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 1rem;
+        }
+
+        .status {
+            background: #e8f4f8;
+            border-left: 4px solid #0066cc;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .status.success {
+            background: #e8f8e8;
+            border-color: #00aa00;
+        }
+
+        .status.error {
+            background: #ffe8e8;
+            border-color: #cc0000;
+        }
+
+        .status.info {
+            background: #e8f2ff;
+            border-color: #4a90e2;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #d4cfc4;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: white;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #c84c09;
+        }
+
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-save {
+            background: #c84c09;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #a33d07;
+        }
+
+        .btn-save:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-view {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-view:hover {
+            background: #e0e0e0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #7a7568;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #7a7568;
+            margin-top: 0.25rem;
+        }
+
+        .paywall {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .paywall h3 {
+            margin: 0 0 0.75rem 0;
+            color: #c84c09;
+            font-size: 1.3rem;
+        }
+
+        .paywall p {
+            margin: 0 0 1rem 0;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .paywall ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .paywall ul li {
+            margin: 0.5rem 0;
+        }
+
+        .paywall .btn-save {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            font-weight: 700;
+        }
+
+        .paywall .btn-view {
+            width: 100%;
+            padding: 0.75rem;
+        }
+
+        .paywall a {
+            color: #c84c09;
+            text-decoration: none;
+        }
+
+        .paywall a:hover {
+            text-decoration: underline;
+        }
+
+        .captures-remaining {
+            font-size: 0.85rem;
+            color: #7a7568;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        /* "I paid" confirmation step */
+        .confirm-paid {
+            background: #f0f5e6;
+            border: 2px solid #7a9a3e;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            text-align: left;
+            display: none;
+        }
+
+        .confirm-paid strong {
+            color: #5a6e3c;
+        }
+
+        .confirm-paid-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .btn-confirm {
+            background: #5a6e3c;
+            color: white;
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-confirm:hover {
+            background: #4a5a30;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: #7a7568;
+            flex: 1;
+            padding: 0.6rem;
+            border: 2px solid #d4cfc4;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background: #f5f5f5;
+        }
+
+        /* Auto-fill highlight animation */
+        @keyframes autofill-highlight {
+            0% { background-color: #fff3cd; }
+            100% { background-color: white; }
+        }
+
+        .auto-filled {
+            animation: autofill-highlight 2s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>&#128203; Capture Job Posting</h1>
+    </div>
+    
+    <div class="content">
+        <div id="loading" class="loading">
+            Extracting job information...
+        </div>
+
+        <div id="form" style="display: none;">
+            <div id="status" class="status" style="display: none;"></div>
+
+            <label for="title">Job Title</label>
+            <input type="text" id="title" placeholder="e.g., Senior Software Engineer">
+
+            <label for="company">Company</label>
+            <input type="text" id="company" placeholder="e.g., Acme Corp">
+
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="e.g., Remote, New York, NY, or Hybrid">
+
+            <label for="companyAddress">Company Address</label>
+            <input type="text" id="companyAddress" placeholder="Full company address">
+
+            <label for="url">URL</label>
+            <input type="text" id="url" placeholder="Job posting URL">
+            <div class="hint">The page you're currently viewing</div>
+
+            <label for="requirements">Requirements</label>
+            <input type="text" id="requirements" placeholder="Resume, Cover Letter, References">
+            <div class="hint">Comma-separated list</div>
+
+            <label for="salary">Salary Range</label>
+            <input type="text" id="salary" placeholder="e.g., $80,000-$100,000">
+
+            <label for="deadline">Deadline</label>
+            <input type="text" id="deadline" placeholder="e.g., Jan 25, 2026 or 1/25/2026 or tomorrow">
+
+            <label for="datePosted">Date Posted</label>
+            <input type="text" id="datePosted" placeholder="e.g., January 20 or 1/20/2026">
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="Any additional notes about this position..."></textarea>
+
+            <div class="buttons">
+                <button class="btn-view" id="viewBtn">View Tracker</button>
+                <button class="btn-save" id="saveBtn">Save Job</button>
+            </div>
+
+            <div id="capturesRemaining" class="captures-remaining"></div>
+        </div>
+
+        <div id="paywall" class="paywall" style="display: none;">
+            <div style="text-align: center; font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+            <h3>You've Captured 20 Jobs!</h3>
+            <p style="margin-bottom: 0.5rem;">
+                Ready to take your job search to the next level?
+            </p>
+            <div style="background: #fff3cd; border-left: 3px solid #ffb300; padding: 0.75rem; margin: 1rem 0; text-align: left; font-size: 0.9rem;">
+                <strong>✨ Early Adopter Price: $4.99</strong><br>
+                <span style="font-size: 0.85rem; color: #856404;">Regular price will be $9.99 — Lock in this rate now!</span>
+            </div>
+            <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; font-size: 0.9rem; line-height: 1.8;">
+                <li>✓ Unlimited job captures forever</li>
+                <li>✓ One-time payment (no subscription)</li>
+                <li>✓ All future updates included</li>
+                <li>✓ Support indie, open-source development</li>
+            </ul>
+            <button id="purchaseBtn" class="btn-save" style="font-size: 1.1rem; padding: 1rem;">
+                🔓 Unlock Unlimited — $4.99
+            </button>
+            <button id="alreadyPaidBtn" class="btn-view" style="margin-top: 0.5rem;">
+                I already paid — unlock
+            </button>
+            <button id="viewTrackerBtn2" class="btn-view" style="margin-top: 0.5rem;">
+                View My 20 Jobs
+            </button>
+
+            <div id="confirmPaid" class="confirm-paid">
+                <strong>Thanks for supporting the project! 💚</strong>
+                <p style="font-size: 0.85rem; margin: 0.5rem 0 0 0; color: #555;">
+                    Click "Yes, I paid" to unlock unlimited captures. This is an
+                    honor-system unlock — we trust you.
+                </p>
+                <div class="confirm-paid-buttons">
+                    <button id="confirmPaidBtn" class="btn-confirm">Yes, I paid</button>
+                    <button id="cancelPaidBtn" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+
+            <p style="font-size: 0.75rem; color: #7a7568; margin-top: 1rem; line-height: 1.4;">
+                Your data stays 100% local. No ads, no tracking, no subscriptions.<br>
+                <a href="https://github.com/tamarhayrikyan-tech/simple-job-capture" style="color: #c84c09;" target="_blank">Open source on GitHub</a>.<br>
+                Questions or bug reports? <a href="https://github.com/tamarhayrikyan-tech/simple-job-capture/issues" style="color: #c84c09;" target="_blank">Open an issue</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="date-utils.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>
