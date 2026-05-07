@@ -27,8 +27,7 @@ async function getPaywallState() {
 
 async function markAsUnlocked() {
   await chrome.storage.local.set({
-    unlocked: true,
-    unlockedAt: new Date().toISOString()
+    unlocked: true
   });
 }
 

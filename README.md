@@ -15,10 +15,10 @@ Available for Chrome today, with a Firefox build planned.
 - **Today's docket** — pull jobs into a daily working set so you don't lose track of what you're applying to
 - **CSV export/import** — take your data anywhere
 - **Smart dates** — handles "Jan 25", "1/25/2026", or "tomorrow", and figures out whether a date is a past posting or future deadline
-- **Company address lookup** — helpful if you need HQ addresses for unemployment certifications
+- **Company address lookup** — helpful if you need HQ addresses for unemployment certifications. Clicking the 🔍 Lookup button opens a Google search in a new tab; you copy the address back manually. The extension itself never communicates with Google.
 - **No accounts, no cloud, no tracking** — all data lives in your browser's local storage
 
-Works on LinkedIn, Indeed, Idealist, Glassdoor, and most company career sites.
+Works on LinkedIn, Indeed, Idealist, and most job boards and company career sites.
 
 ---
 

@@ -1,8 +1,8 @@
 # Privacy Policy for Simple Job Capture
 
-**Last Updated:** April 2026
+**Last Updated:** May 2026
 **Version:** 1.1
-**Effective Date:** April 2026
+**Effective Date:** May 2026
 
 ## Overview
 
@@ -29,11 +29,17 @@ Simple Job Capture stores the following data **locally on your device only**:
 - Result
 - Personal notes
 
-**Paywall state:**
-- A local capture count (`captureCount`) — a number that increments each time you save a job, up to the free tier limit
-- An unlock flag (`unlocked`) — a boolean that flips to `true` when you click "I already paid" after purchasing
+**Internal state:**
 
-Neither of these values is transmitted anywhere. The capture count is not a quota check against any server; it's just a number in your own browser that you could reset yourself via DevTools if you wanted to.
+The extension keeps a small amount of internal state in your browser's local storage so its features work correctly across sessions. None of these values are transmitted anywhere.
+
+- `captureCount` — a number that increments each time you save a job, up to the free tier limit. Used to enforce the 20-capture free tier.
+- `unlocked` — a boolean that flips to `true` when you click "I already paid" after purchasing. Used to bypass the paywall for users who have unlocked.
+- `todaysDocket` — a list of job indices you've pinned to today's working set in the tracker. Used to remember your docket between sessions.
+- `lastExportDate` — the date of your most recent CSV export. Used to display the "it's been a while since you backed up" reminder.
+- `reminderDismissed` — a boolean that flips to `true` when you dismiss the backup reminder banner. Used so the banner doesn't reappear immediately after you dismiss it.
+
+The capture count is not a quota check against any server; it's just a number in your own browser that you could reset yourself via DevTools if you wanted to. The same is true for every other key in this list.
 
 **The extension does NOT collect or transmit:**
 - Your browsing history

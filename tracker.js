@@ -420,7 +420,7 @@ function renderJobTable(containerId, jobs, isAppliedSection) {
                                ${isInDocket ? 'checked' : ''} title="Add to Today's Docket">
                     </td>
                     <td>
-                        ${job.url ? `<a href="${escapeHtml(job.url)}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; font-weight: 600; display: block;" title="Open job posting">${escapeHtml(job.title)} 🔗</a>` : `<div class="job-title editable" data-field="title" contenteditable="true">${escapeHtml(job.title)}</div>`}
+                        ${isSafeJobUrl(job.url) ? `<a href="${escapeHtml(job.url)}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; font-weight: 600; display: block;" title="Open job posting">${escapeHtml(job.title)} 🔗</a>` : `<div class="job-title editable" data-field="title" contenteditable="true">${escapeHtml(job.title)}</div>`}
                         <div class="editable" data-field="url" contenteditable="true" style="font-size: 0.7rem; color: #7a7568; margin-top: 0.1rem; opacity: 0.7;">${job.url ? escapeHtml(job.url) : 'Click to add URL...'}</div>
                         ${job.notes ? `<div class="editable" data-field="notes" contenteditable="true" style="font-size: 0.8rem; color: #7a7568; margin-top: 0.2rem;">${escapeHtml(job.notes)}</div>` : `<div class="editable" data-field="notes" contenteditable="true" style="font-size: 0.8rem; color: #7a7568; margin-top: 0.2rem; font-style: italic; opacity: 0.5;">Add notes...</div>`}
                     </td>
@@ -497,7 +497,7 @@ function renderJobTable(containerId, jobs, isAppliedSection) {
                                ${isInDocket ? 'checked' : ''} title="Add to Today's Docket">
                     </td>
                     <td>
-                        ${job.url ? `<a href="${escapeHtml(job.url)}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; font-weight: 600; display: block;" title="Open job posting">${escapeHtml(job.title)} 🔗</a>` : `<div class="job-title editable" data-field="title" contenteditable="true">${escapeHtml(job.title)}</div>`}
+                        ${isSafeJobUrl(job.url) ? `<a href="${escapeHtml(job.url)}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; font-weight: 600; display: block;" title="Open job posting">${escapeHtml(job.title)} 🔗</a>` : `<div class="job-title editable" data-field="title" contenteditable="true">${escapeHtml(job.title)}</div>`}
                         ${isApplied ? '<span class="applied-badge">Applied</span>' : ''}
                         <div class="editable" data-field="url" contenteditable="true" style="font-size: 0.7rem; color: #7a7568; margin-top: 0.1rem; opacity: 0.7;">${job.url ? escapeHtml(job.url) : 'Click to add URL...'}</div>
                         ${job.notes ? `<div class="editable" data-field="notes" contenteditable="true" style="font-size: 0.8rem; color: #7a7568; margin-top: 0.2rem;">${escapeHtml(job.notes)}</div>` : `<div class="editable" data-field="notes" contenteditable="true" style="font-size: 0.8rem; color: #7a7568; margin-top: 0.2rem; font-style: italic; opacity: 0.5;">Add notes...</div>`}
@@ -719,6 +719,29 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Returns true only if `url` is a string starting with http:// or https://.
+// Used to gate href rendering — prevents javascript:, data:, file:, mailto:,
+// etc. from being interpreted as a clickable URL when a job is loaded from
+// CSV import or any other untrusted source.
+function isSafeJobUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    return /^https?:\/\//i.test(url.trim());
+}
+
+// CSV formula-injection guard. If a cell's text starts with =, +, -, @, or
+// a tab/CR character, Excel and Google Sheets treat it as a formula when the
+// CSV is opened. Prepending a single quote is the OWASP-recommended fix:
+// it makes the cell render as literal text and disables formula evaluation.
+function sanitizeCsvCell(value) {
+    const s = String(value ?? '');
+    if (s.length === 0) return s;
+    const first = s.charAt(0);
+    if (first === '=' || first === '+' || first === '-' || first === '@' || first === '\t' || first === '\r') {
+        return "'" + s;
+    }
+    return s;
+}
+
 async function lookupAddress(index, companyName, button) {
     if (!companyName || !companyName.trim()) {
         alert('Company name is required to lookup address');
@@ -825,7 +848,7 @@ async function exportData() {
                 j.url || '',
                 j.notes || ''
             ])
-        ].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+        ].map(row => row.map(cell => `"${sanitizeCsvCell(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
 
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
