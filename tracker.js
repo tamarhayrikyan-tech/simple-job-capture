@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupEventListeners();
     setupDragAndDrop();
     checkBackupReminder();
+    renderDonateBanner(document.getElementById('donateBannerContainer'));
 });
 
 // Check if we should show backup reminder (7+ days since last export)

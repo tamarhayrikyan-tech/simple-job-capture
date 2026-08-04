@@ -4,6 +4,18 @@ All notable changes to Simple Job Capture are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-04
+
+### Changed
+
+- **Simple Job Capture is now free with no capture limit.** Every feature works for every user, with no counter or gate of any kind.
+- **Added an optional donation banner.** A small, dismissible banner appears after your 3rd capture asking if you'd like to support development. A slightly fuller version appears at 20 captures. Both can be snoozed for 14 days; neither affects any functionality.
+
+### Removed
+
+- The 20-capture limit and unlock prompt
+- Early-adopter pricing language
+
 ## [1.1.0] - 2026-05-07
 
 Initial public release.

@@ -22,15 +22,13 @@ Works on LinkedIn, Indeed, Idealist, and most job boards and company career site
 
 ---
 
-## Pricing
+## Support the project
 
-Free for your first 20 captures. After that, a one-time **$4.99 early adopter unlock** gives you unlimited captures via [Gumroad](https://tamarhayri.gumroad.com/l/znqaf).
+Simple Job Capture is **free, with no capture limit**. Every feature works for every user, always.
 
-The unlock is **honor-system**: there's no license-key verification or server call. You click "I already paid" inside the extension and it flips a local `unlocked` flag in browser storage. The checkout itself happens on Gumroad, which sends you a receipt.
+If it's been useful during your job search, [a voluntary donation via Gumroad](https://tamarhayri.gumroad.com/l/znqaf) helps keep it maintained and ad-free. The extension will occasionally show a small, dismissible reminder — you can snooze it and it won't affect anything either way.
 
-This is a deliberate design trade-off. Verifying payments would require the extension to talk to a server, which would compromise the privacy promise that the extension never makes network requests. We chose privacy over enforcement.
-
-**If you'd rather not pay:** the source is MIT-licensed. Clone the repo, remove the paywall checks, and build your own unlimited version. This is allowed and explicitly fine. Paying supports continued development.
+The donation link opens Gumroad in a new browser tab. The extension itself never communicates with Gumroad or any other server.
 
 ---
 
@@ -84,7 +82,7 @@ Simple Job Capture does not collect, transmit, or share any data. Everything you
 - No analytics
 - No external API calls (the extension doesn't contact any servers)
 - No account required
-- The Gumroad checkout opens in a separate browser tab when you click "Buy" — the extension never communicates with Gumroad directly
+- If you choose to donate, the Gumroad page opens in a separate browser tab — the extension never communicates with Gumroad directly
 
 See [PRIVACY.md](PRIVACY.md) for the full policy.
 
@@ -98,9 +96,8 @@ Because it's open source, you can:
 - Inspect every line of code before installing
 - Modify it for your own workflow
 - Package your own build if you don't want to use the version distributed through browser stores
-- Remove the paywall if you want — it's a trust-based system, not a technical lock
 
-This is closer to old-school shareware than modern SaaS. The extension works fully without payment for the first 20 captures, the source is fully open, and the paywall relies on goodwill rather than enforcement.
+This is closer to old-school freeware than modern SaaS. The extension is fully functional with no gates, the source is fully open, and support is entirely voluntary.
 
 ---
 

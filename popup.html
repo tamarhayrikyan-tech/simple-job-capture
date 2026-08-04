@@ -142,107 +142,104 @@
             margin-top: 0.25rem;
         }
 
-        .paywall {
-            text-align: center;
-            padding: 1.5rem;
+        /* ========== DONATE BANNERS ========== */
+        /* Simple Job Capture has no paywall. These are optional, dismissible
+           reminders — never a gate on functionality. */
+
+        .donate-banner-small {
+            background: #fff8e6;
+            border: 1px solid #ffb300;
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
 
-        .paywall h3 {
-            margin: 0 0 0.75rem 0;
+        .donate-banner-small a {
             color: #c84c09;
-            font-size: 1.3rem;
-        }
-
-        .paywall p {
-            margin: 0 0 1rem 0;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        .paywall ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .paywall ul li {
-            margin: 0.5rem 0;
-        }
-
-        .paywall .btn-save {
-            width: 100%;
-            margin-bottom: 0.5rem;
-            padding: 1rem;
-            font-weight: 700;
-        }
-
-        .paywall .btn-view {
-            width: 100%;
-            padding: 0.75rem;
-        }
-
-        .paywall a {
-            color: #c84c09;
+            font-weight: 600;
             text-decoration: none;
         }
 
-        .paywall a:hover {
-            text-decoration: underline;
-        }
+        .donate-banner-small a:hover { text-decoration: underline; }
 
-        .captures-remaining {
-            font-size: 0.85rem;
+        .donate-banner-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
             color: #7a7568;
-            text-align: center;
-            margin-top: 0.5rem;
+            opacity: 0.6;
+            flex-shrink: 0;
+            padding: 0.2rem;
+            line-height: 1;
         }
 
-        /* "I paid" confirmation step */
-        .confirm-paid {
-            background: #f0f5e6;
-            border: 2px solid #7a9a3e;
+        .donate-banner-close:hover { opacity: 1; }
+
+        .donate-banner-milestone {
+            background: #fff3cd;
+            border: 2px solid #ffb300;
+            border-radius: 6px;
             padding: 1rem;
-            margin-top: 0.75rem;
-            text-align: left;
-            display: none;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
-        .confirm-paid strong {
-            color: #5a6e3c;
+        .donate-banner-milestone .donate-banner-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
         }
 
-        .confirm-paid-buttons {
+        .donate-banner-milestone strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .donate-banner-milestone p {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .donate-banner-actions {
             display: flex;
             gap: 0.5rem;
-            margin-top: 0.75rem;
+            justify-content: center;
         }
 
-        .btn-confirm {
-            background: #5a6e3c;
+        .donate-banner-support-btn {
+            background: #c84c09;
             color: white;
-            flex: 1;
-            padding: 0.6rem;
             border: none;
+            padding: 0.6rem 1rem;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
+            font-family: inherit;
         }
 
-        .btn-confirm:hover {
-            background: #4a5a30;
-        }
+        .donate-banner-support-btn:hover { background: #a33d07; }
 
-        .btn-cancel {
+        .donate-banner-snooze-btn {
             background: white;
             color: #7a7568;
-            flex: 1;
-            padding: 0.6rem;
             border: 2px solid #d4cfc4;
+            padding: 0.6rem 1rem;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
+            font-family: inherit;
         }
 
-        .btn-cancel:hover {
-            background: #f5f5f5;
-        }
+        .donate-banner-snooze-btn:hover { background: #f5f5f5; }
 
         /* Auto-fill highlight animation */
         @keyframes autofill-highlight {
@@ -266,6 +263,7 @@
         </div>
 
         <div id="form" style="display: none;">
+            <div id="donateBannerContainer"></div>
             <div id="status" class="status" style="display: none;"></div>
 
             <label for="title">Job Title</label>
@@ -305,56 +303,15 @@
                 <button class="btn-save" id="saveBtn">Save Job</button>
             </div>
 
-            <div id="capturesRemaining" class="captures-remaining"></div>
-        </div>
-
-        <div id="paywall" class="paywall" style="display: none;">
-            <div style="text-align: center; font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
-            <h3>You've Captured 20 Jobs!</h3>
-            <p style="margin-bottom: 0.5rem;">
-                Ready to take your job search to the next level?
-            </p>
-            <div style="background: #fff3cd; border-left: 3px solid #ffb300; padding: 0.75rem; margin: 1rem 0; text-align: left; font-size: 0.9rem;">
-                <strong>✨ Early Adopter Price: $4.99</strong><br>
-                <span style="font-size: 0.85rem; color: #856404;">Regular price will be $9.99 — Lock in this rate now!</span>
-            </div>
-            <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; font-size: 0.9rem; line-height: 1.8;">
-                <li>✓ Unlimited job captures forever</li>
-                <li>✓ One-time payment (no subscription)</li>
-                <li>✓ All future updates included</li>
-                <li>✓ Support indie, open-source development</li>
-            </ul>
-            <button id="purchaseBtn" class="btn-save" style="font-size: 1.1rem; padding: 1rem;">
-                🔓 Unlock Unlimited — $4.99
-            </button>
-            <button id="alreadyPaidBtn" class="btn-view" style="margin-top: 0.5rem;">
-                I already paid — unlock
-            </button>
-            <button id="viewTrackerBtn2" class="btn-view" style="margin-top: 0.5rem;">
-                View My 20 Jobs
-            </button>
-
-            <div id="confirmPaid" class="confirm-paid">
-                <strong>Thanks for supporting the project! 💚</strong>
-                <p style="font-size: 0.85rem; margin: 0.5rem 0 0 0; color: #555;">
-                    Click "Yes, I paid" to unlock unlimited captures. This is an
-                    honor-system unlock — we trust you.
-                </p>
-                <div class="confirm-paid-buttons">
-                    <button id="confirmPaidBtn" class="btn-confirm">Yes, I paid</button>
-                    <button id="cancelPaidBtn" class="btn-cancel">Cancel</button>
-                </div>
-            </div>
-
-            <p style="font-size: 0.75rem; color: #7a7568; margin-top: 1rem; line-height: 1.4;">
+            <p style="font-size: 0.75rem; color: #7a7568; margin-top: 1rem; line-height: 1.4; text-align: center;">
                 Your data stays 100% local. No ads, no tracking, no subscriptions.<br>
-                <a href="https://github.com/tamarhayrikyan-tech/simple-job-capture" style="color: #c84c09;" target="_blank">Open source on GitHub</a>.<br>
-                Questions or bug reports? <a href="https://github.com/tamarhayrikyan-tech/simple-job-capture/issues" style="color: #c84c09;" target="_blank">Open an issue</a>
+                <a href="https://github.com/tamarhayrikyan-tech/simple-job-capture" style="color: #c84c09;" target="_blank">Open source on GitHub</a>.
             </p>
         </div>
     </div>
 
     <script src="date-utils.js"></script>
+    <script src="donate-banner.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>

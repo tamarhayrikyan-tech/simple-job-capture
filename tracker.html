@@ -216,6 +216,112 @@
             color: white;
         }
 
+        /* ========== DONATE BANNERS ========== */
+        /* Simple Job Capture has no paywall. These are optional, dismissible
+           reminders — never a gate on functionality. */
+
+        .donate-banner-small {
+            background: #fff8e6;
+            border: 1px solid #ffb300;
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .donate-banner-small a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .donate-banner-small a:hover { text-decoration: underline; }
+
+        .donate-banner-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--subtle);
+            opacity: 0.6;
+            flex-shrink: 0;
+            padding: 0.2rem;
+            line-height: 1;
+        }
+
+        .donate-banner-close:hover { opacity: 1; }
+
+        .donate-banner-milestone {
+            background: #fff3cd;
+            border: 2px solid var(--docket-border);
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .donate-banner-milestone .donate-banner-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .donate-banner-milestone .donate-banner-text { flex: 1; }
+
+        .donate-banner-milestone strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .donate-banner-milestone p {
+            font-size: 0.875rem;
+            color: var(--subtle);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .donate-banner-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .donate-banner-support-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.9rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            white-space: nowrap;
+        }
+
+        .donate-banner-support-btn:hover { background: #a33d07; }
+
+        .donate-banner-snooze-btn {
+            background: white;
+            color: var(--subtle);
+            border: 2px solid var(--border);
+            padding: 0.5rem 0.9rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            white-space: nowrap;
+        }
+
+        .donate-banner-snooze-btn:hover { background: #f5f5f5; }
+
         /* ========== CONTROLS ========== */
         .controls {
             display: flex;
@@ -671,6 +777,9 @@
             </div>
         </div>
 
+        <!-- Donate Banner -->
+        <div id="donateBannerContainer"></div>
+
         <!-- Backup Reminder Banner -->
         <div class="backup-reminder" id="backupReminder" style="display: none;">
             <span>&#128268; It's been a while since your last backup. Export your jobs to CSV to keep them safe!</span>
@@ -709,6 +818,7 @@
     </div>
 
     <script src="date-utils.js"></script>
+    <script src="donate-banner.js"></script>
     <script src="tracker.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 # Privacy Policy for Simple Job Capture
 
-**Last Updated:** May 2026
-**Version:** 1.1
-**Effective Date:** May 2026
+**Last Updated:** August 2026
+**Version:** 1.2
+**Effective Date:** August 2026
 
 ## Overview
 
@@ -33,13 +33,13 @@ Simple Job Capture stores the following data **locally on your device only**:
 
 The extension keeps a small amount of internal state in your browser's local storage so its features work correctly across sessions. None of these values are transmitted anywhere.
 
-- `captureCount` — a number that increments each time you save a job, up to the free tier limit. Used to enforce the 20-capture free tier.
-- `unlocked` — a boolean that flips to `true` when you click "I already paid" after purchasing. Used to bypass the paywall for users who have unlocked.
+- `totalCaptures` — a running count of how many jobs you've saved. Used only to decide when to first show the optional donation banner (after capture #3). Not a quota; there is no capture limit.
+- `donateBannerSnoozedUntil` — an ISO timestamp set when you dismiss the donation banner. Used to suppress the banner for 14 days after you snooze it.
 - `todaysDocket` — a list of job indices you've pinned to today's working set in the tracker. Used to remember your docket between sessions.
 - `lastExportDate` — the date of your most recent CSV export. Used to display the "it's been a while since you backed up" reminder.
-- `reminderDismissed` — a boolean that flips to `true` when you dismiss the backup reminder banner. Used so the banner doesn't reappear immediately after you dismiss it.
+- `reminderDismissed` — a timestamp set when you dismiss the backup reminder banner. Used so the banner doesn't reappear the same day you dismiss it.
 
-The capture count is not a quota check against any server; it's just a number in your own browser that you could reset yourself via DevTools if you wanted to. The same is true for every other key in this list.
+None of these keys are sent anywhere. They are readable and deletable via your browser's DevTools at any time.
 
 **The extension does NOT collect or transmit:**
 - Your browsing history
@@ -62,18 +62,16 @@ No cloud backup or syncing happens automatically. If you want a backup, use the 
 3. It stores the result locally
 4. **Nothing is sent anywhere**
 
-## The paywall and Gumroad
+## Voluntary donations and Gumroad
 
-Simple Job Capture uses an honor-system paywall: the first 20 captures are free, and a one-time $4.99 unlock (early adopter price) gives unlimited captures.
+Simple Job Capture is free with no capture limit. If you choose to support development, a donation link opens [Gumroad](https://gumroad.com/privacy) in a new browser tab.
 
-**How the paywall works technically:**
-- When you click "Buy", the extension opens Gumroad in a new browser tab — the same as if you typed the URL yourself. The extension does not communicate with Gumroad.
-- You pay on Gumroad's site. Gumroad collects your payment information and sends you a receipt. This transaction is governed by Gumroad's own privacy policy: https://gumroad.com/privacy
-- When you return to the extension and click "I already paid", the extension flips the local `unlocked` flag. There is no license key, no server verification, and no tracking.
+**How this works technically:**
+- The extension never communicates with Gumroad. Clicking the donation link uses `window.open()` to open a new tab, the same as clicking any ordinary link.
+- Whatever your browser normally sends to gumroad.com (cookies, IP address, user agent) is what gets sent — nothing more, and nothing the extension controls.
+- The extension has no way to know whether you donated. There is no receipt check, no license key, and no server call. The donation banner can be snoozed regardless of whether you've donated.
 
-**Why the honor system:** verifying payments would require the extension to call a server, which would compromise the "no network presence" design. The honor-system approach is a deliberate trade-off: we rely on trust rather than technical enforcement so that the extension can make a stronger privacy promise.
-
-**If you prefer not to use Gumroad at all:** the source code is MIT-licensed and publicly available. You can clone it, remove the paywall checks, and build your own unlimited version. This is explicitly allowed.
+If you prefer not to use Gumroad, simply ignore or snooze the banner. It has no effect on functionality either way.
 
 ## Third-party access
 
@@ -84,7 +82,7 @@ Simple Job Capture does NOT:
 - Track behavior
 - Send data to analytics services
 
-The extension involves third-party services in only two narrow, user-initiated cases: the Gumroad checkout (described above) and the optional address-lookup feature (described below). Both require an explicit click from you, and both work by opening a new browser tab — the extension itself never communicates with these services.
+The extension involves third-party services in only two narrow, user-initiated cases: the optional Gumroad donation link (described above) and the optional address-lookup feature (described below). Both require an explicit click from you, and both work by opening a new browser tab — the extension itself never communicates with these services.
 
 ## Optional address lookup
 

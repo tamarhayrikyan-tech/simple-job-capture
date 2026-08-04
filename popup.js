@@ -5,40 +5,6 @@
  */
 
 // ====================================================================
-// Configuration
-// ====================================================================
-
-const FREE_CAPTURE_LIMIT = 20;
-
-// Gumroad product URL for the $4.99 unlimited-captures unlock.
-const GUMROAD_URL = 'https://tamarhayri.gumroad.com/l/znqaf';
-
-// ====================================================================
-// Paywall helpers (honor system — no payment verification)
-// ====================================================================
-
-async function getPaywallState() {
-  const result = await chrome.storage.local.get(['captureCount', 'unlocked']);
-  return {
-    captureCount: result.captureCount || 0,
-    unlocked: result.unlocked === true
-  };
-}
-
-async function markAsUnlocked() {
-  await chrome.storage.local.set({
-    unlocked: true
-  });
-}
-
-async function incrementCaptureCount() {
-  const result = await chrome.storage.local.get(['captureCount']);
-  const count = (result.captureCount || 0) + 1;
-  await chrome.storage.local.set({ captureCount: count });
-  return count;
-}
-
-// ====================================================================
 // Initialization
 // ====================================================================
 
@@ -47,33 +13,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('form');
 
   try {
-    const { captureCount, unlocked } = await getPaywallState();
+    // Show the donate banner (if any variant is due) — never blocks the form.
+    renderDonateBanner(document.getElementById('donateBannerContainer'));
 
-    // Show paywall immediately if at/over the free limit and not unlocked
-    if (!unlocked && captureCount >= FREE_CAPTURE_LIMIT) {
-      loading.style.display = 'none';
-      document.getElementById('paywall').style.display = 'block';
-      return;
-    }
-
-    // Show remaining captures for free users (not shown for unlocked users)
-    if (!unlocked) {
-      const remaining = FREE_CAPTURE_LIMIT - captureCount;
-      const remainingDiv = document.getElementById('capturesRemaining');
-
-      if (remaining <= 5 && remaining > 0) {
-        remainingDiv.innerHTML = `
-          <div style="background: #fff3cd; border: 1px solid #ffb300; padding: 0.75rem; border-radius: 4px; margin-top: 0.75rem;">
-            <strong>⚠️ ${remaining} free capture${remaining !== 1 ? 's' : ''} remaining</strong><br>
-            <span style="font-size: 0.85rem;">Unlock unlimited for $4.99 (early adopter price) before hitting the limit!</span>
-          </div>
-        `;
-      } else {
-        remainingDiv.textContent = `${remaining} free capture${remaining !== 1 ? 's' : ''} remaining`;
-      }
-    }
-
-    // Get the current active tab and extract job info
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     try {
@@ -144,9 +86,7 @@ function showStatus(message, type = 'info', persistent = false) {
   status.style.display = 'block';
 
   if (type === 'success' && !persistent) {
-    setTimeout(() => {
-      status.style.display = 'none';
-    }, 3000);
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
   }
 }
 
@@ -166,7 +106,6 @@ function showSavedConfirmation() {
       Or close this popup and continue browsing jobs
     </p>
   `;
-
   document.getElementById('viewTrackerBtn').addEventListener('click', () => {
     chrome.tabs.create({ url: 'tracker.html' });
   });
@@ -176,16 +115,8 @@ function showSavedConfirmation() {
 // Event handlers
 // ====================================================================
 
-// Save button
+// Save button — always saves. Simple Job Capture has no capture limit.
 document.getElementById('saveBtn').addEventListener('click', async () => {
-  const { captureCount, unlocked } = await getPaywallState();
-
-  if (!unlocked && captureCount >= FREE_CAPTURE_LIMIT) {
-    document.getElementById('form').style.display = 'none';
-    document.getElementById('paywall').style.display = 'block';
-    return;
-  }
-
   const job = {
     title: document.getElementById('title').value.trim(),
     company: document.getElementById('company').value.trim(),
@@ -212,12 +143,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     const jobs = result.jobs || [];
     jobs.push(job);
     await chrome.storage.local.set({ jobs });
-
-    // Only increment the capture count for non-unlocked users
-    if (!unlocked) {
-      await incrementCaptureCount();
-    }
-
+    await incrementTotalCaptures();
     showSavedConfirmation();
   } catch (error) {
     console.error('Error saving job:', error);
@@ -225,61 +151,14 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   }
 });
 
-// View tracker button
 document.getElementById('viewBtn').addEventListener('click', () => {
   chrome.tabs.create({ url: 'tracker.html' });
 });
 
-// Purchase button — opens Gumroad in a new tab
-document.getElementById('purchaseBtn').addEventListener('click', () => {
-  chrome.tabs.create({ url: GUMROAD_URL });
-});
-
-// "I already paid" button — shows the honor-system confirmation step
-document.getElementById('alreadyPaidBtn').addEventListener('click', () => {
-  document.getElementById('confirmPaid').style.display = 'block';
-});
-
-// Confirm paid — flips the unlocked flag and shows success
-document.getElementById('confirmPaidBtn').addEventListener('click', async () => {
-  await markAsUnlocked();
-  document.getElementById('paywall').innerHTML = `
-    <div style="text-align: center; padding: 2rem;">
-      <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
-      <h3 style="color: #5a6e3c; margin-bottom: 1rem;">Unlocked!</h3>
-      <p style="color: #555; margin-bottom: 1.5rem;">
-        Thanks for supporting Simple Job Capture. You now have unlimited captures.
-      </p>
-      <button id="continueBtn" class="btn-save" style="padding: 0.75rem 2rem;">
-        Continue capturing jobs
-      </button>
-    </div>
-  `;
-  document.getElementById('continueBtn').addEventListener('click', () => {
-    // Reload the popup to return to the capture form
-    window.location.reload();
-  });
-});
-
-// Cancel paid confirmation
-document.getElementById('cancelPaidBtn').addEventListener('click', () => {
-  document.getElementById('confirmPaid').style.display = 'none';
-});
-
-// Paywall "View tracker" button
-document.getElementById('viewTrackerBtn2').addEventListener('click', () => {
-  chrome.tabs.create({ url: 'tracker.html' });
-});
-
-// Date field auto-formatting
 document.getElementById('deadline').addEventListener('blur', function() {
-  if (this.value.trim()) {
-    this.value = parseFlexibleDate(this.value, 'deadline');
-  }
+  if (this.value.trim()) this.value = parseFlexibleDate(this.value, 'deadline');
 });
 
 document.getElementById('datePosted').addEventListener('blur', function() {
-  if (this.value.trim()) {
-    this.value = parseFlexibleDate(this.value, 'datePosted');
-  }
+  if (this.value.trim()) this.value = parseFlexibleDate(this.value, 'datePosted');
 });
